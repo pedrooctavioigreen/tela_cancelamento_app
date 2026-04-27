@@ -1,0 +1,397 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .phone-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 1.5rem;
+  }
+  .phone {
+    width: 360px;
+    background: #f4f4f4;
+    border-radius: 32px;
+    border: 2px solid #ddd;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    position: relative;
+    min-height: 640px;
+  }
+  .screen {
+    background: #fff;
+    min-height: 640px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .top-bar {
+    display: flex;
+    border-bottom: 1px solid #e8e8e8;
+    position: relative;
+  }
+  .tab {
+    flex: 1;
+    padding: 14px 0 10px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #888;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .tab.active {
+    color: #1a1a1a;
+    border-bottom: 2.5px solid #00C853;
+  }
+  .tab-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .install-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fafafa;
+  }
+  .install-label { font-size: 13px; font-weight: 600; color: #222; }
+  .install-num { font-size: 13px; color: #444; }
+  .alert-box {
+    margin: 12px 14px;
+    background: #f0fdf5;
+    border: 1px solid #b7efcc;
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: center;
+    font-size: 13px;
+    color: #222;
+    line-height: 1.5;
+  }
+  .alert-box strong { color: #00B347; }
+  .cancel-card {
+    margin: 0 14px 10px;
+    background: #fff;
+    border: 1px solid #e4e4e4;
+    border-radius: 10px;
+    padding: 14px 14px 14px 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .cancel-icon { flex-shrink: 0; margin-top: 2px; }
+  .cancel-text { font-size: 12.5px; color: #333; line-height: 1.5; }
+  .cancel-text .date { color: #FF6B00; font-weight: 600; }
+  .cancel-text .cause { font-size: 12px; color: #444; margin-top: 4px; }
+  .cancel-text .cause span { color: #00B347; font-weight: 600; }
+  .track-label {
+    padding: 6px 14px 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+  .step-card {
+    margin: 0 14px 10px;
+    background: #fff;
+    border: 1px solid #e4e4e4;
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .step-card:hover { border-color: #00C853; background: #f8fff9; }
+  .step-card:active { background: #f0fdf5; }
+  .step-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1a1a1a;
+    text-align: center;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .solar-icon {
+    display: flex;
+    justify-content: center;
+    margin: 4px 0 10px;
+  }
+  .step-prazo {
+    text-align: center;
+    font-size: 12.5px;
+    color: #444;
+    margin-bottom: 3px;
+  }
+  .step-prazo strong { color: #00B347; }
+  .step-note {
+    text-align: center;
+    font-size: 11px;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .status-row {
+    text-align: center;
+    font-size: 12.5px;
+    color: #444;
+    margin-top: 6px;
+  }
+  .status-row strong { color: #E6A817; }
+  .help-btn {
+    margin: 6px 14px 14px;
+    background: #00C853;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 13px;
+    width: calc(100% - 28px);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+  }
+  .bottom-nav {
+    margin-top: auto;
+    display: flex;
+    border-top: 1px solid #e8e8e8;
+    background: #fff;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0 8px;
+    font-size: 11px;
+    color: #888;
+    cursor: pointer;
+    gap: 3px;
+  }
+  .nav-item.active { color: #00C853; }
+
+  .overlay-wrap {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.38);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 30px;
+  }
+  .modal {
+    background: #fff;
+    border-radius: 18px;
+    width: 320px;
+    padding: 24px 20px 20px;
+    position: relative;
+  }
+  .modal-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    line-height: 1.4;
+    margin-bottom: 14px;
+  }
+  .modal-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .modal-subtitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .modal-body {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.65;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+  }
+  .modal-close:hover { color: #555; }
+
+  .tap-hint {
+    text-align: center;
+    font-size: 11.5px;
+    color: #aaa;
+    margin: 0 14px 6px;
+    font-style: italic;
+  }
+</style>
+
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="screen" id="screen">
+
+      <div class="top-bar">
+        <div class="tab">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.8">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 0131.07 1.18 2 2 0 0122 3.18 2 2 0 0122 5.18"/>
+            <path d="M22 16.92c0 .55-.45 1-.1 1.32A16.1 16.1 0 0114 3.32"/>
+          </svg>
+          <span>Telecom</span>
+        </div>
+        <div class="tab active">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="#00C853"/>
+          </svg>
+          <span>Energia</span>
+        </div>
+      </div>
+
+      <div class="install-bar">
+        <span class="install-label">Minhas Instalações:</span>
+        <span class="install-num">123456</span>
+      </div>
+
+      <div class="alert-box">
+        A Unidade Consumidora selecionada está em um processo de <strong>cancelamento.</strong>
+      </div>
+
+      <div class="cancel-card">
+        <div class="cancel-icon">
+          <svg width="38" height="42" viewBox="0 0 38 42" fill="none">
+            <rect x="4" y="6" width="26" height="32" rx="2" stroke="#00C853" stroke-width="1.8" fill="none"/>
+            <line x1="9" y1="14" x2="25" y2="14" stroke="#00C853" stroke-width="1.5"/>
+            <line x1="9" y1="19" x2="25" y2="19" stroke="#00C853" stroke-width="1.5"/>
+            <line x1="9" y1="24" x2="20" y2="24" stroke="#00C853" stroke-width="1.5"/>
+            <circle cx="29" cy="33" r="7" fill="#fff" stroke="#00C853" stroke-width="1.5"/>
+            <path d="M26 33l2 2 4-4" stroke="#00C853" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10 5V3M14 4V2M18 4V2M22 5V3" stroke="#00C853" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="cancel-text">
+          Solicitação de cancelamento registrada no dia <span class="date">01/01/2026</span>
+          <div class="cause"><span>Causa:</span> Solicitação do titular</div>
+        </div>
+      </div>
+
+      <div class="track-label">Acompanhe por aqui como está o andamento:</div>
+
+      <div class="tap-hint">Toque na etapa abaixo para saber mais</div>
+
+      <div class="step-card" onclick="openModal()">
+        <div class="step-title">Interrupção no envio de Créditos de Energia para sua conta</div>
+        <div class="solar-icon">
+          <svg width="52" height="44" viewBox="0 0 52 44" fill="none">
+            <rect x="6" y="8" width="14" height="10" rx="1.5" stroke="#bbb" stroke-width="1.5" fill="#e8e8e8"/>
+            <rect x="22" y="8" width="14" height="10" rx="1.5" stroke="#bbb" stroke-width="1.5" fill="#e8e8e8"/>
+            <line x1="6" y1="13" x2="20" y2="13" stroke="#ccc" stroke-width="1"/>
+            <line x1="22" y1="13" x2="36" y2="13" stroke="#ccc" stroke-width="1"/>
+            <line x1="13" y1="8" x2="13" y2="18" stroke="#ccc" stroke-width="1"/>
+            <line x1="29" y1="8" x2="29" y2="18" stroke="#ccc" stroke-width="1"/>
+            <line x1="21" y1="18" x2="21" y2="24" stroke="#bbb" stroke-width="1.5"/>
+            <line x1="16" y1="24" x2="26" y2="24" stroke="#bbb" stroke-width="1.5"/>
+            <line x1="18" y1="24" x2="14" y2="30" stroke="#bbb" stroke-width="1.5"/>
+            <line x1="24" y1="24" x2="28" y2="30" stroke="#bbb" stroke-width="1.5"/>
+            <line x1="12" y1="30" x2="30" y2="30" stroke="#bbb" stroke-width="1.5"/>
+            <circle cx="42" cy="10" r="4" stroke="#bbb" stroke-width="1.5" fill="none"/>
+            <line x1="42" y1="4" x2="42" y2="5.5" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="42" y1="14.5" x2="42" y2="16" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="36" y1="10" x2="37.5" y2="10" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="46.5" y1="10" x2="48" y2="10" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="37.8" y1="5.8" x2="38.8" y2="6.8" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="45.2" y1="13.2" x2="46.2" y2="14.2" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="step-prazo">Prazo estimado: <strong>60 a 90 dias</strong></div>
+        <div class="step-note">(Esse tempo depende da distribuidora de energia da sua região)</div>
+        <div class="status-row">Status: <strong>Em andamento</strong></div>
+      </div>
+
+      <button class="help-btn">Preciso de Ajuda</button>
+
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Início
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          Faturas
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+          Menu
+        </div>
+      </div>
+
+      <div class="overlay-wrap" id="modal-overlay" style="display:none;" onclick="closeOnBg(event)">
+        <div class="modal" id="modal-box">
+          <button class="modal-close" onclick="closeModal()">✕</button>
+          <div class="modal-title">Interrupção no envio de Créditos de Energia para sua conta</div>
+          <div class="modal-icon">
+            <svg width="52" height="44" viewBox="0 0 52 44" fill="none">
+              <rect x="6" y="8" width="14" height="10" rx="1.5" stroke="#bbb" stroke-width="1.5" fill="#e8e8e8"/>
+              <rect x="22" y="8" width="14" height="10" rx="1.5" stroke="#bbb" stroke-width="1.5" fill="#e8e8e8"/>
+              <line x1="6" y1="13" x2="20" y2="13" stroke="#ccc" stroke-width="1"/>
+              <line x1="22" y1="13" x2="36" y2="13" stroke="#ccc" stroke-width="1"/>
+              <line x1="13" y1="8" x2="13" y2="18" stroke="#ccc" stroke-width="1"/>
+              <line x1="29" y1="8" x2="29" y2="18" stroke="#ccc" stroke-width="1"/>
+              <line x1="21" y1="18" x2="21" y2="24" stroke="#bbb" stroke-width="1.5"/>
+              <line x1="16" y1="24" x2="26" y2="24" stroke="#bbb" stroke-width="1.5"/>
+              <line x1="18" y1="24" x2="14" y2="30" stroke="#bbb" stroke-width="1.5"/>
+              <line x1="24" y1="24" x2="28" y2="30" stroke="#bbb" stroke-width="1.5"/>
+              <line x1="12" y1="30" x2="30" y2="30" stroke="#bbb" stroke-width="1.5"/>
+              <circle cx="42" cy="10" r="4" stroke="#bbb" stroke-width="1.5" fill="none"/>
+              <line x1="42" y1="4" x2="42" y2="5.5" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="42" y1="14.5" x2="42" y2="16" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="36" y1="10" x2="37.5" y2="10" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="46.5" y1="10" x2="48" y2="10" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="37.8" y1="5.8" x2="38.8" y2="6.8" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="45.2" y1="13.2" x2="46.2" y2="14.2" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="modal-subtitle">O que é isso?</div>
+          <div class="modal-body">
+            Nesta etapa, estamos finalizando o envio de novos créditos de energia para a sua conta. Isso significa que a usina parceira deixa de gerar novos benefícios para você, iniciando o processo de encerramento do serviço.
+          </div>
+          <div class="modal-body">
+            Os créditos já gerados antes dessa etapa ainda poderão ser utilizados normalmente nos próximos ciclos de faturamento...
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('modal-overlay').style.display = 'flex';
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').style.display = 'none';
+  }
+  function closeOnBg(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+</script>
